@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import AnimatedCharacter from './components/AnimatedCharacter'
 import ResultsList from './components/ResultsList'
 import Shuffle from './components/Shuffle'
+import BorderGlow from './components/BorderGlow'
 
 // Detect whether a File object is a ZIP archive
 const isZip = (file) =>
@@ -12,8 +13,8 @@ const isZip = (file) =>
 export default function App() {
   const [appState, setAppState] = useState('idle') // idle | hover | eating | spitting | results
   const [files, setFiles] = useState({ followers: null, following: null })
-  const [zipFile, setZipFile] = useState(null)          // ZIP mode
-  const [zipMode, setZipMode] = useState(false)         // true when a ZIP was dropped
+  const [zipFile, setZipFile] = useState(null)
+  const [zipMode, setZipMode] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
 
@@ -31,7 +32,6 @@ export default function App() {
   }, [appState])
 
   // ── Shared animation wrapper ─────────────────────────────────────────────────
-  // Runs the fetch, waits for the minimum chew animation, then transitions.
 
   const runWithAnimation = async (fetchFn) => {
     setAppState('eating')
@@ -77,8 +77,8 @@ export default function App() {
       const res = await fetch('/upload-zip', { method: 'POST', body: form })
       const data = await res.json()
 
-      if (!res.ok) throw new Error(data.error || `Server error: ${res.status}`)
-      if (data.following_count === 0) throw new Error('No following accounts found in the ZIP.')
+      if (!res.ok) throw new Error(data.error || `Error del servidor: ${res.status}`)
+      if (data.following_count === 0) throw new Error('No se encontraron cuentas seguidas en el ZIP.')
       return data
     })
   }, [])
@@ -95,16 +95,16 @@ export default function App() {
       const res = await fetch('/upload', { method: 'POST', body: form })
       const data = await res.json()
 
-      if (!res.ok) throw new Error(data.error || `Server error: ${res.status}`)
+      if (!res.ok) throw new Error(data.error || `Error del servidor: ${res.status}`)
       if (data.followers_count === 0)
-        throw new Error(`No followers found in "${currentFiles.followers.name}".`)
+        throw new Error(`No se encontraron seguidores en "${currentFiles.followers.name}".`)
       if (data.following_count === 0)
-        throw new Error(`No accounts found in "${currentFiles.following.name}".`)
+        throw new Error(`No se encontraron cuentas seguidas en "${currentFiles.following.name}".`)
       return data
     })
   }, [])
 
-  // ── Drop handler — routes to ZIP or JSON flow ────────────────────────────────
+  // ── Drop handler ─────────────────────────────────────────────────────────────
 
   const handleDrop = useCallback((e) => {
     e.preventDefault()
@@ -112,19 +112,19 @@ export default function App() {
 
     const dropped = Array.from(e.dataTransfer.files)
 
-    // ── ZIP: single .zip file → ZIP flow
+    // ZIP: single .zip file → ZIP flow
     if (dropped.length === 1 && isZip(dropped[0])) {
       setZipFile(dropped[0])
       processZip(dropped[0])
       return
     }
 
-    // ── JSON: route by filename
+    // JSON: route by filename
     let newFollowers = files.followers
     let newFollowing = files.following
 
     dropped.forEach((f) => {
-      if (isZip(f)) return // ignore stray ZIPs when mixing files
+      if (isZip(f)) return
       const name = f.name.toLowerCase()
       if (name.includes('follower')) newFollowers = f
       else if (name.includes('following')) newFollowing = f
@@ -142,32 +142,38 @@ export default function App() {
     }
   }, [appState, files, processZip, processJsonFiles])
 
-  // ── Status labels ────────────────────────────────────────────────────────────
+  // ── Status pills (only shown when a file is already loaded) ──────────────────
 
   const idleStatus = zipMode ? (
-    <div className="px-4 py-2 rounded-full text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
-      {zipFile ? `📦 ${zipFile.name}` : 'Suelta tu ZIP de Instagram'}
-    </div>
+    zipFile && (
+      <div className="px-4 py-2 rounded-full text-xs font-bold bg-violet-100 text-violet-600 border border-violet-200">
+        📦 {zipFile.name}
+      </div>
+    )
   ) : (
-    <div className="flex gap-4 items-center">
-      <div className={`px-4 py-2 rounded-full text-xs font-bold ${files.followers ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-zinc-100 text-zinc-500 border border-zinc-200'}`}>
-        {files.followers ? `✅ ${files.followers.name}` : 'Esperando followers...'}
+    (files.followers || files.following) && (
+      <div className="flex gap-3 items-center flex-wrap justify-center">
+        {files.followers && (
+          <div className="px-4 py-2 rounded-full text-xs font-bold bg-green-100 text-green-600 border border-green-200">
+            ✅ {files.followers.name}
+          </div>
+        )}
+        {files.following && (
+          <div className="px-4 py-2 rounded-full text-xs font-bold bg-green-100 text-green-600 border border-green-200">
+            ✅ {files.following.name}
+          </div>
+        )}
       </div>
-      <div className={`px-4 py-2 rounded-full text-xs font-bold ${files.following ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-zinc-100 text-zinc-500 border border-zinc-200'}`}>
-        {files.following ? `✅ ${files.following.name}` : 'Esperando following...'}
-      </div>
-    </div>
+    )
   )
 
-  const eatingLabel = zipMode
-    ? 'Procesando ZIP…'
-    : 'Masticando datos…'
+  const eatingLabel = zipMode ? 'Procesando ZIP…' : 'Masticando datos…'
 
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
     <div
-      className="min-h-screen bg-white text-zinc-800 flex flex-col items-center overflow-x-hidden"
+      className="min-h-screen bg-slate-50 text-zinc-700 flex flex-col items-center overflow-x-hidden"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -191,54 +197,61 @@ export default function App() {
             respectReducedMotion={true}
             loop={false}
             loopDelay={0}
-            className="text-purple-600 drop-shadow-sm"
+            className="text-violet-400 drop-shadow-sm"
             style={{ fontSize: 'clamp(1.8rem, 6vw, 3.5rem)' }}
           />
-          <p className="text-zinc-500 max-w-md text-base md:text-lg font-medium">
+          <p className="text-zinc-400 max-w-md text-base md:text-lg font-medium">
             ¡Dale de comer tu archivo de Instagram y descubre quién no te sigue!
           </p>
         </header>
 
-        {/* Character */}
-        <div className={`transition-all duration-700 ease-out flex flex-col items-center justify-center ${appState === 'results' ? 'mt-8 mb-8 scale-75' : 'mt-12 scale-100'}`}>
+        {/* Character drop zone */}
+        <BorderGlow
+          className={`transition-all duration-700 ease-out w-full flex flex-col items-center justify-center rounded-2xl border bg-white/70
+            ${appState === 'results' ? 'mt-6 mb-6 scale-75' : 'mt-10 scale-100'}
+            ${appState === 'hover' ? 'border-pink-300 shadow-lg shadow-pink-100' : 'border-violet-100'}`}
+          glowColor={appState === 'hover' ? 'rgba(244, 114, 182, 0.7)' : 'rgba(167, 139, 250, 0.65)'}
+          borderRadius={16}
+          proximity={100}
+        >
           <AnimatedCharacter state={appState} />
 
-          {/* Status pills */}
-          <div className="mt-8 h-12 flex items-center justify-center">
+          {/* Status */}
+          <div className="pb-6 h-14 flex items-center justify-center px-4">
             {appState === 'idle' && idleStatus}
 
             {appState === 'hover' && (
-              <span className="text-pink-500 font-bold animate-pulse text-lg">¡Suéltalos!</span>
+              <span className="text-pink-400 font-bold animate-pulse text-lg">¡Suéltalos!</span>
             )}
 
             {appState === 'eating' && (
-              <span className="text-purple-600 font-bold animate-pulse flex items-center gap-2 text-lg">
+              <span className="text-violet-400 font-bold animate-pulse flex items-center gap-2 text-lg">
                 {eatingLabel}
               </span>
             )}
           </div>
 
-          {/* Hint shown in idle — tells user both ZIP and JSON are accepted */}
+          {/* Hint — only when nothing has been dropped yet */}
           {appState === 'idle' && !files.followers && !files.following && !zipFile && (
-            <p className="mt-3 text-xs text-zinc-400 text-center">
-              Arrastra el <span className="font-semibold text-purple-500">.zip</span> de Instagram
-              {' '}o los archivos <span className="font-semibold">followers_1.json</span> +{' '}
-              <span className="font-semibold">following.json</span> por separado
+            <p className="pb-6 text-xs text-zinc-300 text-center px-6">
+              Arrastra el <span className="font-semibold text-violet-400">.zip</span> de Instagram
+              {' '}o los archivos <span className="font-semibold text-zinc-400">followers_1.json</span> +{' '}
+              <span className="font-semibold text-zinc-400">following.json</span> por separado
             </p>
           )}
 
           {error && (
-            <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
-              <p className="text-sm text-red-400 font-medium">{error}</p>
+            <div className="mb-6 mx-6 p-3 rounded-xl bg-rose-50 border border-rose-200">
+              <p className="text-sm text-rose-500 font-medium">{error}</p>
             </div>
           )}
-        </div>
+        </BorderGlow>
 
         {/* Results */}
         {appState === 'results' && result && (
-          <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out pb-24">
+          <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out pb-10">
             {result.followers_files_merged > 1 && (
-              <p className="text-center text-xs text-zinc-400 mb-4">
+              <p className="text-center text-xs text-violet-300 mb-4">
                 {result.followers_files_merged} archivos de seguidores combinados
               </p>
             )}
@@ -246,13 +259,27 @@ export default function App() {
             <div className="mt-8 text-center">
               <button
                 onClick={() => { setResult(null); setAppState('idle'); setZipMode(false) }}
-                className="px-6 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-medium transition-colors"
+                className="px-6 py-2 rounded-full bg-violet-100 hover:bg-violet-200 text-violet-600 text-sm font-medium transition-colors border border-violet-200"
               >
                 Analizar de nuevo
               </button>
             </div>
           </div>
         )}
+
+        {/* Disclaimer */}
+        <footer className="mt-10 mb-6 max-w-md text-center text-xs text-zinc-400 space-y-1 px-4">
+          <p className="font-semibold text-zinc-500">⚠️ Sobre los resultados</p>
+          <p>
+            Puede que aparezcan <span className="font-medium text-zinc-500">cuentas desactivadas</span>.
+            Si al visitar el perfil ves "Usuario no encontrado", la cuenta está temporalmente
+            desactivada — Instagram no te permite dejar de seguirla hasta que la reactiven.
+          </p>
+          <p>
+            Las cuentas que empiezan con <span className="font-mono text-zinc-500">__deleted__</span> se
+            filtran automáticamente. Los datos reflejan el momento en que solicitaste la exportación, no en tiempo real.
+          </p>
+        </footer>
 
       </div>
     </div>

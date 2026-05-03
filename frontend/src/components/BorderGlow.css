@@ -1,0 +1,40 @@
+.border-glow-card {
+  --edge-proximity: 0;
+  --cursor-angle: 0deg;
+  --glow-color: rgba(167, 139, 250, 0.75);
+  --border-width: 1.5px;
+  --border-radius: 16px;
+
+  position: relative;
+  border-radius: var(--border-radius);
+  isolation: isolate;
+}
+
+/* Glowing conic border that follows the cursor */
+.border-glow-card::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--border-width) * -1);
+  border-radius: calc(var(--border-radius) + var(--border-width));
+  background: conic-gradient(
+    from calc(var(--cursor-angle) - 65deg),
+    transparent 0%,
+    var(--glow-color) 12%,
+    transparent 24%
+  );
+  opacity: var(--edge-proximity);
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+/* Solid background layer so inner content isn't see-through */
+.border-glow-card::after {
+  content: '';
+  position: absolute;
+  inset: var(--border-width);
+  border-radius: calc(var(--border-radius) - var(--border-width));
+  background: inherit;
+  z-index: -1;
+  pointer-events: none;
+}
