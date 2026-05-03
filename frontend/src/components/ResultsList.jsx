@@ -7,19 +7,19 @@ function StatCard({ label, value, accent }) {
       className={[
         'flex flex-col items-center justify-center rounded-xl p-4 gap-1',
         accent
-          ? 'bg-pink-50 border border-pink-200'
-          : 'bg-violet-50 border border-violet-100',
+          ? 'bg-pink-100 border border-pink-300'
+          : 'bg-violet-100 border border-violet-200',
       ].join(' ')}
-      glowColor={accent ? 'rgba(244, 114, 182, 0.65)' : 'rgba(167, 139, 250, 0.65)'}
+      glowColor={accent ? 'rgba(244, 114, 182, 0.8)' : 'rgba(139, 92, 246, 0.8)'}
       borderRadius={12}
     >
       <span className={[
         'text-2xl font-bold',
-        accent ? 'text-pink-500' : 'text-violet-500',
+        accent ? 'text-pink-600' : 'text-violet-600',
       ].join(' ')}>
         {value}
       </span>
-      <span className="text-xs text-zinc-500 text-center">{label}</span>
+      <span className="text-xs text-zinc-600 font-medium text-center">{label}</span>
     </BorderGlow>
   )
 }

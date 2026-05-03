@@ -4,6 +4,11 @@ import ResultsList from './components/ResultsList'
 import Shuffle from './components/Shuffle'
 import BorderGlow from './components/BorderGlow'
 
+// Base URL for API calls.
+// In dev the Vite proxy handles relative URLs → localhost:5000.
+// In production set VITE_API_URL=https://your-app.railway.app in Vercel.
+const API = import.meta.env.VITE_API_URL ?? ''
+
 // Detect whether a File object is a ZIP archive
 const isZip = (file) =>
   file.type === 'application/zip' ||
@@ -74,7 +79,7 @@ export default function App() {
       const form = new FormData()
       form.append('zip', file)
 
-      const res = await fetch('/upload-zip', { method: 'POST', body: form })
+      const res = await fetch(`${API}/upload-zip`, { method: 'POST', body: form })
       const data = await res.json()
 
       if (!res.ok) throw new Error(data.error || `Error del servidor: ${res.status}`)
@@ -92,7 +97,7 @@ export default function App() {
       form.append('followers', currentFiles.followers)
       form.append('following', currentFiles.following)
 
-      const res = await fetch('/upload', { method: 'POST', body: form })
+      const res = await fetch(`${API}/upload`, { method: 'POST', body: form })
       const data = await res.json()
 
       if (!res.ok) throw new Error(data.error || `Error del servidor: ${res.status}`)
@@ -197,10 +202,10 @@ export default function App() {
             respectReducedMotion={true}
             loop={false}
             loopDelay={0}
-            className="text-violet-400 drop-shadow-sm"
+            className="text-violet-600 drop-shadow-sm"
             style={{ fontSize: 'clamp(1.8rem, 6vw, 3.5rem)' }}
           />
-          <p className="text-zinc-400 max-w-md text-base md:text-lg font-medium">
+          <p className="text-zinc-500 max-w-md text-base md:text-lg font-medium">
             ¡Dale de comer tu archivo de Instagram y descubre quién no te sigue!
           </p>
         </header>
@@ -273,11 +278,7 @@ export default function App() {
           <p>
             Puede que aparezcan <span className="font-medium text-zinc-500">cuentas desactivadas</span>.
             Si al visitar el perfil ves "Usuario no encontrado", la cuenta está temporalmente
-            desactivada — Instagram no te permite dejar de seguirla hasta que la reactiven.
-          </p>
-          <p>
-            Las cuentas que empiezan con <span className="font-mono text-zinc-500">__deleted__</span> se
-            filtran automáticamente. Los datos reflejan el momento en que solicitaste la exportación, no en tiempo real.
+            desactivada. Instagram no te permite dejar de seguirla hasta que la reactiven.
           </p>
         </footer>
 
