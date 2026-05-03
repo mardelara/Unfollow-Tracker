@@ -1,0 +1,49 @@
+# ─── Claude ───────────────────────────────────────────────────────────────────
+.claude/
+
+# ─── Python / Backend ─────────────────────────────────────────────────────────
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/.env
+backend/.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ─── Node / Frontend ──────────────────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+frontend/.env.local
+frontend/.env.*.local
+
+# ─── Instagram data files (privacy!) ──────────────────────────────────────────
+*.json.bak
+followers*.json
+following*.json
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── Editors & IDEs ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
