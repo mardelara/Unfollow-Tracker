@@ -5,9 +5,9 @@ import Shuffle from './components/Shuffle'
 import BorderGlow from './components/BorderGlow'
 
 // Base URL for API calls.
-// In dev the Vite proxy handles relative URLs → localhost:5000.
-// In production set VITE_API_URL=https://your-app.railway.app in Vercel.
-const API = import.meta.env.VITE_API_URL ?? ''
+// In dev falls back to http://localhost:5000 (Flask running locally).
+// In production set VITE_BACKEND_URL=https://your-app.railway.app in Vercel.
+const API = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:5000'
 
 // Detect whether a File object is a ZIP archive
 const isZip = (file) =>
