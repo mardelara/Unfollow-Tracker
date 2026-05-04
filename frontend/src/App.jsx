@@ -238,7 +238,7 @@ export default function App() {
 
           {/* Hint — only when nothing has been dropped yet */}
           {appState === 'idle' && !files.followers && !files.following && !zipFile && (
-            <p className="pb-6 text-xs text-zinc-300 text-center px-6">
+            <p className="pb-6 text-xs text-zinc-500 text-center px-6">
               Arrastra el <span className="font-semibold text-violet-400">.zip</span> de Instagram
               {' '}o los archivos <span className="font-semibold text-zinc-400">followers_1.json</span> +{' '}
               <span className="font-semibold text-zinc-400">following.json</span> por separado
