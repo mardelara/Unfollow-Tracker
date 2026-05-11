@@ -99,8 +99,8 @@ export default function AnimatedCharacter({ state }) {
   return (
     <div className="relative flex flex-col items-center justify-center">
       <motion.div 
-        className="relative w-full max-w-[320px] sm:max-w-[400px] h-auto flex items-center justify-center"
-        style={{ aspectRatio: '418 / 596' }}
+        className="relative w-full max-w-[320px] sm:max-w-[400px] h-[420px] sm:h-[520px] flex items-center justify-center"
+        style={{ aspectRatio: '418 / 596', minHeight: '420px' }}
         animate={{ y: state === 'idle' ? [-5, 5, -5] : 0 }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       >
