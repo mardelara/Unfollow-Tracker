@@ -36,7 +36,7 @@ export default function ResultsList({ data }) {
   return (
     <div className="w-full flex flex-col gap-6">
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
         <StatCard label="Siguiendo" value={data.following_count} />
         <StatCard label="Seguidores" value={data.followers_count} />
         <StatCard label="No te siguen" value={data.non_followers_count} accent />

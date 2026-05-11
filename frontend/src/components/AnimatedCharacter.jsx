@@ -99,7 +99,8 @@ export default function AnimatedCharacter({ state }) {
   return (
     <div className="relative flex flex-col items-center justify-center">
       <motion.div 
-        className="relative w-[320px] h-[400px] sm:w-[400px] sm:h-[500px] flex items-center justify-center"
+        className="relative w-full max-w-[320px] sm:max-w-[400px] h-auto flex items-center justify-center"
+        style={{ aspectRatio: '418 / 596' }}
         animate={{ y: state === 'idle' ? [-5, 5, -5] : 0 }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -113,7 +114,7 @@ export default function AnimatedCharacter({ state }) {
         {/* Screen Area — centered at 50% horizontal, 60% vertical of the container,
              which maps exactly to the transparent hole in frame.png (pixel-analysed:
              hole center = 49.5% x, 59.9% y of the 418×596 source image). */}
-        <div className="absolute z-10 top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[138px] h-[128px] sm:w-[175px] sm:h-[162px] bg-[#9da88a] rounded-xl overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center border-2 border-zinc-500/50">
+        <div className="absolute z-10 top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44%] h-[32%] bg-[#9da88a] rounded-xl overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center border-2 border-zinc-500/50">
           
           {/* Checkerboard Background Pattern */}
           <div className="absolute inset-0 opacity-20 pointer-events-none" 

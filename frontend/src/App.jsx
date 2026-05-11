@@ -183,7 +183,7 @@ export default function App() {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="max-w-2xl w-full mx-auto px-4 flex flex-col items-center justify-center flex-1 z-10 py-12">
+      <div className="max-w-2xl w-full mx-auto px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center flex-1 z-10 py-12">
 
         {/* Header */}
         <header className={`text-center flex flex-col items-center gap-4 transition-all duration-700 ${appState === 'results' ? 'opacity-30 scale-95 mt-0' : 'mt-12'}`}>
@@ -273,7 +273,7 @@ export default function App() {
         )}
 
         {/* Disclaimer */}
-        <footer className="mt-10 mb-6 max-w-md text-center text-xs text-zinc-400 space-y-1 px-4">
+        <footer className="mt-10 mb-6 max-w-md text-center text-xs text-zinc-400 space-y-1 px-4 sm:px-0">
           <p className="font-semibold text-zinc-500">⚠️ Sobre los resultados</p>
           <p>
             Puede que aparezcan <span className="font-medium text-zinc-500">cuentas desactivadas</span>.
@@ -286,7 +286,7 @@ export default function App() {
 
       {/* GitHub badge — fixed bottom-right */}
       <BorderGlow
-        className="fixed bottom-5 right-5 z-50 bg-white border border-violet-200 rounded-full shadow-sm"
+        className="hidden sm:flex fixed bottom-5 right-5 z-50 bg-white border border-violet-200 rounded-full shadow-sm"
         glowColor="rgba(139, 92, 246, 0.75)"
         borderRadius={9999}
         proximity={60}
